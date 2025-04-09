@@ -16,14 +16,20 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    users.groups.xnode-rust-template = { };
+    users.users.xnode-rust-template = {
+      isSystemUser = true;
+      group = "xnode-rust-template";
+    };
+
     systemd.services.xnode-rust-template = {
       wantedBy = [ "multi-user.target" ];
       description = "Rust App.";
       after = [ "network.target" ];
       serviceConfig = {
         ExecStart = "${lib.getExe xnode-rust-template}";
-        DynamicUser = true;
-        CacheDirectory = "rust-app";
+        User = "xnode-rust-template";
+        Group = "xnode-rust-template";
       };
     };
   };
